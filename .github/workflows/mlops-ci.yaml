@@ -44,6 +44,9 @@ jobs:
           ghcr.io/mlflow/mlflow:latest \
           mlflow server --host 0.0.0.0 --backend-store-uri sqlite:///mlflow.db --default-artifact-root /tmp/mlruns
 
+      - name: Check MLflow health
+        run: curl http://localhost:5555
+
       - name: Run Model Training
         run: |
           python src/models/train_model.py \
