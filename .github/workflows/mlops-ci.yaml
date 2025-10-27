@@ -39,12 +39,11 @@ jobs:
       
       - name: Start MLflow container
         run: |
-          docker run -d --name mlflow -p 5555:5000 \
-          ghcr.io/mlflow/mlflow:latest \
-          mlflow server --host 0.0.0.0 \
-          --backend-store-uri sqlite:////tmp/mlflow.db \
-          --default-artifact-root /tmp/mlruns
-
+          docker run -d --name mlflow \
+            -p 5555:5000 \
+            ghcr.io/mlflow/mlflow:latest \
+            mlflow server --host 0.0.0.0 --backend-store-uri sqlite:///mlflow.db --default-artifact-root /tmp/mlruns
+          sleep 15
 
       - name: Check MLflow health
         run: curl http://localhost:5555
