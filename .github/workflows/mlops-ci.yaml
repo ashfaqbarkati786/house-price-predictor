@@ -39,12 +39,11 @@ jobs:
       
       - name: Start MLflow container
         run: |
-          docker run -d \
-            --name mlflow-tracking-server \
-            -p 5555:5000 \
-            ghcr.io/mlflow/mlflow:latest \
-            mlflow server --host 0.0.0.0 --backend-store-uri sqlite:///mlflow.db --default-artifact-root /tmp/mlruns
-      
+          docker run -d --name mlflow \
+          -p 5555:5000 \
+          ghcr.io/mlflow/mlflow:latest \
+          mlflow server --host 0.0.0.0 --backend-store-uri sqlite:///mlflow.db --default-artifact-root /tmp/mlruns
+
       - name: Run Model Training
         run: |
           python src/models/train_model.py \
@@ -56,5 +55,5 @@ jobs:
       - name: Stop and remove MLflow container
         if: always()  # ensures cleanup even if previous step fails
         run: |
-          docker stop mlflow-tracking-server || true
-          docker rm mlflow-tracking-server || true
+          docker stop mlflow || true
+          docker rm mlflow || true
