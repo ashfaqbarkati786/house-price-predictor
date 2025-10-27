@@ -37,9 +37,13 @@ jobs:
           --output data/processed/featured_house_data.csv \
           --preprocessor models/trained/preprocessor.pkl
       
-      - name: Setup Mlflow Server
+      - name: Start MLflow container
         run: |
-          docker-compose -f /deployment/mlflow/docker-compose.yaml up -d
+          docker run -d \
+            --name mlflow-tracking-server \
+            -p 5555:5000 \
+            ghcr.io/mlflow/mlflow:latest \
+            mlflow server --host 0.0.0.0 --backend-store-uri sqlite:///mlflow.db --default-artifact-root /tmp/mlruns
       
       - name: Run Model Training
         run: |
@@ -49,6 +53,8 @@ jobs:
           --models-dir models \
           --mlflow-tracking-uri http://localhost:5555
       
-      - name: destroy Mlflow Server
+      - name: Stop and remove MLflow container
+        if: always()  # ensures cleanup even if previous step fails
         run: |
-          docker-compose -f /deployment/mlflow/docker-compose.yaml down
+          docker stop mlflow-tracking-server || true
+          docker rm mlflow-tracking-server || true
