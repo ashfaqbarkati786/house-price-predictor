@@ -80,12 +80,7 @@ jobs:
           docker run -d -p 5000:5000 --name mlflow-server \
             ghcr.io/mlflow/mlflow:latest mlflow server \
             --host 0.0.0.0 --backend-store-uri sqlite:///mlflow.db
-
-      - name: Wait for MLflow to start
-        run: |
-          for i in {1..10}; do
-            curl -f http://localhost:5000/health && break || sleep 5
-          done
+          sleep 15
 
       - name: Train model
         run: |
