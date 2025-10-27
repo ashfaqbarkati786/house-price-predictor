@@ -131,6 +131,10 @@ jobs:
           registry: docker.io
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+          
+      - name: Extract short SHA
+        id: vars
+        run: echo "sha_short=${GITHUB_SHA::8}" >> $GITHUB_ENV
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
@@ -138,4 +142,6 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: docker.io/${{ vars.DOCKERHUB_USERNAME }}/house-pricemodel:latest
+          tags: 
+            docker.io/${{ vars.DOCKERHUB_USERNAME }}/fastapi:${{ env.sha_short }}
+            docker.io/${{ vars.DOCKERHUB_USERNAME }}/fastapi:latest
